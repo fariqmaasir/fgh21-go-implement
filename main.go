@@ -4,11 +4,8 @@ import (
 	"fmt"
 )
 
-func fazzFood(price int, disc string, distance int, tax bool) {
+func calcDiscount(price int, disc string) int {
 	var userDisc int
-	var taxValue int
-	var total int
-	// When user use FAZZFOOD50
 	if disc == "FAZZFOOD50" && price >= 50000 {
 		userDisc = price * 50 / 100
 		if userDisc > 50000 {
@@ -17,28 +14,39 @@ func fazzFood(price int, disc string, distance int, tax bool) {
 		// When user use DITRAKTIR60
 	} else if disc == "DITRAKTIR60" && price >= 25000 {
 		userDisc = price * 60 / 100
-		if userDisc > 30000 {
+		if userDisc >= 30000 {
 			userDisc = 30000
 		}
 	} else if disc == "" {
 		userDisc = 0
 	} else {
 		fmt.Println("YOUR DISCOUNT VOUCHER ISN'T VALID")
-		return
 	}
+	return userDisc
+}
 
-	// --------------Delivery Fee---------------
+func calcDistance(distance int) int {
 	var deliveryFee = 5000
 	if deliveryFee > 2 {
 		deliveryFee += (int(distance) - 2) * 3000
 	}
+	return deliveryFee
+}
 
-	// --------------Tax---------------
+func calcTax(price int, tax bool) int {
+	var taxValue int
 	if tax {
 		taxValue = price * 5 / 100
 	} else {
 		taxValue = 0
 	}
+	return taxValue
+}
+func fazzFood(price int, disc string, distance int, tax bool) {
+	userDisc := calcDiscount(price, disc)
+	deliveryFee := calcDistance(distance)
+	taxValue := calcTax(price, tax)
+	var total int
 
 	total = price - userDisc + deliveryFee + taxValue
 	fmt.Printf("Harga       : %d", price)
@@ -53,5 +61,14 @@ func fazzFood(price int, disc string, distance int, tax bool) {
 }
 
 func main() {
-	fazzFood(25000, "DITRAKTIR60", 5, true)
+	var orderPrice int
+	var voucher string
+	var distance int
+	fmt.Print("Masukan Harga  : ")
+	fmt.Scanln(&orderPrice)
+	fmt.Print("Masukan Diskon : ")
+	fmt.Scanln(&voucher)
+	fmt.Print("Masukan Jarak  : ")
+	fmt.Scanln(&distance)
+	fazzFood(orderPrice, voucher, distance, false)
 }
